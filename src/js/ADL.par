@@ -1,0 +1,277 @@
+/~
+	ADL, Javascript implementation for the Application Definition Language
+	Copyright 2009 by Christophe VG & TheSoftwareFactory
+
+	see LICENSE file and http://thesoftwarefactory.be/wiki/Adl for
+	information how you can use ADL
+
+	ADL Format: everything is a construct:
+	type name : super +modifier := value {
+	  <constructs>	    
+	}
+
+	This parser returns an AST of constructs, aka ACT ;-)
+~/
+	
+[*
+
+if( typeof Class == "undefined" ) {
+    alert( "ADL requires at least the Prototype Class support." );
+}
+
+var ADL = {};
+ADL.Integer = Class.create( {
+    value : null,
+    initialize: function( value ) {
+	this.value = value;
+    },
+    toString: function() {
+	return this.value;
+    }
+});
+
+ADL.String = Class.create( {
+    value : null,
+    initialize: function( value ) {
+	this.value = value;
+    },
+    toString: function() {
+	return '"' + this.value + '"';
+    }
+});
+
+ADL.Annotation = Class.create( {
+    data : null,
+    initialize: function( data ) {
+	this.data = data;
+    },
+    toString: function() {
+	return "[@" + this.data + "]";
+    }
+});
+
+ADL.Multiplicity = Class.create( {
+    low : null,
+    high : null,
+    initialize: function( low, high ) {
+	this.low = low;
+	this.high = high;
+    },
+    toString: function() {
+	return "[" + this.low + ( this.high ? ".." + this.high : "" ) + "]";
+    }
+});
+
+ADL.Reference = Class.create( {
+    constructName : null,
+    multiplicity : null,
+    initialize: function( constructName, multiplicity ) {
+	this.constructName = constructName;
+	this.multiplicity = multiplicity;
+    },
+    toString: function() {
+	return this.constructName + 
+	    ( this.multiplicity ? this.multiplicity.toString() : "" );
+    }
+});
+
+ADL.Modifier = Class.create( {
+    key : null,
+    value : null,
+    initialize: function( key, value ) {
+	this.key = key;
+	this.value = value;
+    },
+    toString: function() {
+	return "+" + this.key + 
+	    ( this.value ? "=" + this.value.toString() : "" );
+    }
+});
+
+ADL.Construct = Class.create( {
+    annotation: null,
+    type      : null,
+    name      : null,
+    zuper     : null,
+    value     : null,
+    modifiers : new Hash(),
+    children  : new Array(),
+
+    initialize: function( type, name ) {
+	this.type = type;
+	this.name = name;
+	this.modifiers = new Hash();
+	this.children = new Array();
+    },
+    toString: function(ident) {
+      if(!ident) { ident=""; }
+      var modifiers = new Array();
+      this.modifiers.each(function(pair) { 
+	  modifiers.push( pair.value.toString() ); 
+      });
+
+      var children = new Array();
+      this.children.each( function(item) { 
+	  children.push( item.toString("  " + ident) ); 
+      });
+
+	return ( this.annotation ? 
+		 ident + this.annotation.toString() + "\n" : "" ) 
+	    + ident + this.type 
+            + " " + this.name
+	    + ( this.zuper ? ": " + this.zuper.toString() : "" )
+            + ( modifiers.length > 0 ? " " + modifiers.join(" ") : "" )
+	    + ( this.value ? " = " + this.value : "" )
+	    + ( children.length > 0 ? 
+		" {" + "\n" + children.join( "\n") + "\n" + ident + "}" : ";" );
+    },
+    accept: function( visitor, data ) {
+	return visitor.visit(this, data);
+    },
+    childrenAccept: function( visitor, data ) {
+	this.children.each(function(child) { visitor.visit(child, data); } );
+	return data;
+    }
+} );
+
+ADL.createConstruct = function(annotation, type, name, zuper, 
+		               modifiers, value, children) {
+  var c = new ADL.Construct( type, name )  ;
+  if( annotation ) { c.annotation = annotation; }
+  if( zuper ) { c.zuper = zuper; }
+  if( Object.isArray(modifiers) ) {
+      modifiers.each(function(modifier) { 
+	  c.modifiers.set(modifier.key, modifier);
+      } );
+  }   
+  if( value ) { c.value = value; }
+  if( Object.isArray(children) ) { 
+      c.children = children;
+  }  
+  return c; 
+}
+
+ADL.AST = Class.create( {
+    root : ADL.createConstruct( "", "root", "" ),
+    initialize: function(top) {
+	this.root.children = top;
+    },
+    getRoot: function() {
+	return this.root;
+    }
+});
+
+ADL.ast = null;
+
+ADL.Parser = Class.create( {
+  parse: function( src ) {
+      var error_cnt = 0;
+      var error_off = new Array();
+      var error_la  = new Array();
+
+      ADL.ast = null;
+
+      if( ( error_cnt = __##PREFIX##parse( src, error_off, error_la ) ) > 0 ) {
+	  var i;
+	  for( i = 0; i < error_cnt; i++ ) {
+	      alert( "Parse error near >" 
+		     + src.substr( error_off[i], 30 ) + 
+		     "<, expecting \"" + error_la[i].join() + "\"" );
+	  }
+	  return null;
+      }
+      return ADL.ast;
+  }
+
+});
+
+function makeList() {
+    var ar = new Array();
+    if( arguments ) {
+	for( var v=0; v<arguments.length; v++ ) {
+	    if( Object.isArray(arguments[v]) ) {
+		for( var vv=0; vv<arguments[v].length; vv++ ) {
+		    if( arguments[v][vv] ) { 
+			ar.push(arguments[v][vv]); 
+		    }
+		}
+	    } else {
+		if( arguments[v] ) { ar.push(arguments[v]); }
+	    }
+	}
+    }
+
+    return ar;
+}
+
+*]
+
+!	' |\t|\n|\r|\f|//[^\n]*\n|[^/]/\*[^\*]*\*(\*|[^\*/][^\*]*\*)*/'
+
+	'0|[1-9][0-9]*'			 Integer
+        [* %match = new ADL.Integer( %match ); *]
+	'"([^"])*"'			 String	
+        [* %match = new ADL.String( %match.substr( 1, %match.length - 2 ) ); *]
+	'\[@([^\]])*\]'			 Annotation	
+        [* %match = new ADL.Annotation(%match.substr(2, %match.length - 3)); *]
+        '\('
+        '\)'
+	'{'
+	'}'
+	'\['
+	'\]'
+	';'
+	':'
+	'::'
+        '\.'
+        ','
+
+	'\+'
+	'\-'
+	'='
+	'!='
+	':='
+        '\*'
+        '/'
+	'\|'
+	'\.\.'
+
+        '[a-zA-Z_][a-zA-Z0-9_\.\-]*'         Identifier;
+
+##
+
+Program: Constructs [* ADL.ast = new ADL.AST(%1); *];
+
+Constructs: Constructs Construct  [* %% = makeList( %1, %2 ); *]
+          |;
+								
+Construct: Annotations Type Name Zuper Modifiers Value Children 
+    [* %% = ADL.createConstruct( %1, %2, %3, %4, %5, %6, %7 ); *];
+
+Annotations: Annotation
+           |;
+
+Type: Identifier;
+
+Name: Identifier;
+
+Zuper: ':' Identifier Multiplicity [* %% = new ADL.Reference( %2, %3 ); *] 
+     |;
+
+Multiplicity: '[' Integer ']'         [* %% = new ADL.Multiplicity( %2 );  *]
+       | '[' Integer '..' Integer ']' [* %% = new ADL.Multiplicity( %2, %4 ); *]
+       |;
+
+Modifiers: Modifiers Modifier [* %% = makeList( %1, %2 ); *]
+         |;
+
+Modifier: '+' Identifier              [* %% = new ADL.Modifier( %2 );     *]
+        | '+' Identifier '=' Constant [* %% = new ADL.Modifier( %2, %4 ); *];
+
+Value: ':=' Constant [* %% = %2 *] 
+     |;
+
+Constant: String | Integer;
+
+Children: '{' Constructs '}' [* %% = %2;   *]
+        | ';'                [* %% = null; *];

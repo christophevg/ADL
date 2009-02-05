@@ -1,0 +1,29 @@
+ADL - Application Definition Language
+
+---
+
+ADL is a generic language that allows using applications to fill in
+the gaps.
+
+...
+
+Note: I'm trying to get things as polished as possible, but my current
+focus is on a project that uses ADL. When that reaches a stable state,
+I'll add documentation and examples here also :-)
+
+In a nutshell:
+$ make
+*** fetching js/cc dist
+*** unpacking js/cc dist
+*** importing lib/jscc.js
+*** importing lib/driver_web.js_
+*** generating adl parser
+*** fetching prototype dist
+*** importing lib/prototype.js
+$ ls build
+adl.js
+ls src/js/
+adl.par		visitor.js
+
+Visit examples/demo.html with your browser to see things in action and
+while waiting for me to write decent documentation, study the code.
