@@ -1,9 +1,8 @@
-ADL - Application Definition Language
+ADL - Abstract Definition Language
 
 ---
 
-ADL is a generic language that allows using applications to fill in
-the gaps.
+ADL is a generic language to describe hierarchical stuff, like software ;-)
 
 ...
 
@@ -25,5 +24,5 @@ adl.js
 ls src/js/
 adl.par		visitor.js
 
-Visit examples/demo.html with your browser to see things in action and
+Visit examples/index.html with your browser to see things in action and
 while waiting for me to write decent documentation, study the code.
