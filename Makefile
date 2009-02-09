@@ -1,11 +1,9 @@
+PROTOTYPE-DIST=prototype-1.6.0.3.js
+PROTOTYPE-URL=http://www.prototypejs.org/assets/2008/9/29/${PROTOTYPE-DIST}
+
 APP=ADL
 SRCS=src/js/${APP}.par
-LIBS=patches/prototype.dummy.js \
-     lib/prototype/src/lang/object.js \
-     lib/prototype/src/lang/class.js \
-     lib/prototype/src/lang/enumerable.js \
-     lib/prototype/src/lang/array.js \
-     lib/prototype/src/lang/hash.js
+LIBS=lib/${PROTOTYPE-DIST}
 VERSION=$(shell git describe --tags | cut -d'-' -f1,2)
 
 TARGETS=build/${APP}.standalone.min.js build/${APP}.shared.min.js
@@ -25,8 +23,6 @@ RHINO-URL=ftp://ftp.mozilla.org/pub/mozilla.org/js/${RHINO-DIST}
 
 JSCC-DIST=jscc-0.30.tar.gz
 JSCC-URL=http://jscc.jmksf.com/release/${JSCC-DIST}
-
-PROTOTYPE-GIT=git://github.com/sstephenson/prototype.git
 
 COMPRESSOR-VERSION=2.4.2
 COMPRESSOR-DIST=yuicompressor-${COMPRESSOR-VERSION}.zip
@@ -74,12 +70,10 @@ ${COMPRESS-JAR}:
 	@(cd lib; ${FETCH} ${COMPRESSOR-URL}; ${UNZIP} ${COMPRESSOR-DIST})
 	@(cd lib/yuicompressor-${COMPRESSOR-VERSION}; ant > /dev/null)
 
-${LIBS}: lib/prototype
-
-lib/prototype:
+lib/${PROTOTYPE-DIST}:
 	@echo "*** importing $@"
 	@mkdir -p lib
-	@(cd lib; ${GIT-FETCH} ${PROTOTYPE-GIT})
+	@(cd lib; ${FETCH} ${PROTOTYPE-URL})
 
 lib/jscc/jscc.js: lib/jscc
 lib/jscc/driver_web.js_: lib/jscc

@@ -134,6 +134,12 @@ ADL.Construct = Class.create( {
     }
 } );
 
+ADL.include = function( file ) {
+    var request = new Ajax.Request(file.value + ".adl", 
+		     { method: "get", asynchronous: false });    
+    return new ADL.Parser().parse(request.transport.responseText).getChildren();
+}
+
 ADL.createConstruct = function(annotation, type, name, zuper, 
 		               modifiers, value, children) {
   var c = new ADL.Construct( type, name )  ;
@@ -158,6 +164,9 @@ ADL.AST = Class.create( {
     },
     getRoot: function() {
 	return this.root;
+    },
+    getChildren: function() {
+	return this.root.children;
     }
 });
 
@@ -236,17 +245,25 @@ function makeList() {
 	'\|'
 	'\.\.'
 
+	'#include'			     IncludeDirective
+
         '[a-zA-Z_][a-zA-Z0-9_\.\-]*'         Identifier;
 
 ##
 
-Program: Constructs [* ADL.ast = new ADL.AST(%1); *];
+Program: Statements [* ADL.ast = new ADL.AST(%1); *];
 
-Constructs: Constructs Construct  [* %% = makeList( %1, %2 ); *]
+Statements: Statements Statement  [* %% = makeList( %1, %2 ); *]
           |;
-								
+				
+Statement: Construct
+	 | Directive;
+				
 Construct: Annotations Type Name Zuper Modifiers Value Children 
     [* %% = ADL.createConstruct( %1, %2, %3, %4, %5, %6, %7 ); *];
+
+Directive: IncludeDirective String
+    [* %% = ADL.include( %2 ); *];
 
 Annotations: Annotation
            |;
@@ -273,5 +290,5 @@ Value: ':=' Constant [* %% = %2 *]
 
 Constant: String | Integer;
 
-Children: '{' Constructs '}' [* %% = %2;   *]
+Children: '{' Statements '}' [* %% = %2;   *]
         | ';'                [* %% = null; *];
