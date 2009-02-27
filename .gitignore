@@ -1,1 +1,4 @@
 .check-deps
+build
+lib
+dist

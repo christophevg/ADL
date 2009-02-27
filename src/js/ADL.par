@@ -1,8 +1,8 @@
 /~
-	ADL, Javascript implementation for the Application Definition Language
+	ADL, Javascript implementation for the Abstract Definition Language
 	Copyright 2009 by Christophe VG & TheSoftwareFactory
 
-	see LICENSE file and http://thesoftwarefactory.be/wiki/Adl for
+	see LICENSE file and http://thesoftwarefactory.be/wiki/ADL for
 	information how you can use ADL
 
 	ADL Format: everything is a construct:
@@ -19,12 +19,16 @@ if( typeof Class == "undefined" ) {
     alert( "ADL requires at least the Prototype Class support." );
 }
 
+// top-level ADL namespace
 var ADL = {};
+
 ADL.Integer = Class.create( {
     value : null,
+
     initialize: function( value ) {
 	this.value = value;
     },
+
     toString: function() {
 	return this.value;
     }
@@ -32,9 +36,11 @@ ADL.Integer = Class.create( {
 
 ADL.String = Class.create( {
     value : null,
+
     initialize: function( value ) {
 	this.value = value;
     },
+
     toString: function() {
 	return '"' + this.value + '"';
     }
@@ -42,9 +48,11 @@ ADL.String = Class.create( {
 
 ADL.Annotation = Class.create( {
     data : null,
+
     initialize: function( data ) {
 	this.data = data;
     },
+
     toString: function() {
 	return "[@" + this.data + "]";
     }
@@ -53,10 +61,12 @@ ADL.Annotation = Class.create( {
 ADL.Multiplicity = Class.create( {
     low : null,
     high : null,
+
     initialize: function( low, high ) {
 	this.low = low;
 	this.high = high;
     },
+
     toString: function() {
 	return "[" + this.low + ( this.high ? ".." + this.high : "" ) + "]";
     }
@@ -65,10 +75,12 @@ ADL.Multiplicity = Class.create( {
 ADL.Reference = Class.create( {
     constructName : null,
     multiplicity : null,
+
     initialize: function( constructName, multiplicity ) {
 	this.constructName = constructName;
 	this.multiplicity = multiplicity;
     },
+
     toString: function() {
 	return this.constructName + 
 	    ( this.multiplicity ? this.multiplicity.toString() : "" );
@@ -78,10 +90,12 @@ ADL.Reference = Class.create( {
 ADL.Modifier = Class.create( {
     key : null,
     value : null,
+
     initialize: function( key, value ) {
 	this.key = key;
 	this.value = value;
     },
+
     toString: function() {
 	return "+" + this.key + 
 	    ( this.value ? "=" + this.value.toString() : "" );
@@ -92,7 +106,7 @@ ADL.Construct = Class.create( {
     annotation: null,
     type      : null,
     name      : null,
-    zuper     : null,
+    supers    : null,
     value     : null,
     modifiers : new Hash(),
     children  : new Array(),
@@ -100,11 +114,14 @@ ADL.Construct = Class.create( {
     initialize: function( type, name ) {
 	this.type = type;
 	this.name = name;
+	this.supers    = new Array();
 	this.modifiers = new Hash();
-	this.children = new Array();
+	this.children  = new Array();
     },
+
     toString: function(ident) {
-      if(!ident) { ident=""; }
+      ident = ident || "";
+
       var modifiers = new Array();
       this.modifiers.each(function(pair) { 
 	  modifiers.push( pair.value.toString() ); 
@@ -114,20 +131,22 @@ ADL.Construct = Class.create( {
       this.children.each( function(item) { 
 	  children.push( item.toString("  " + ident) ); 
       });
-
-	return ( this.annotation ? 
-		 ident + this.annotation.toString() + "\n" : "" ) 
+	
+      return ( this.annotation ? 
+	       ident + this.annotation.toString() + "\n" : "" ) 
 	    + ident + this.type 
             + " " + this.name
-	    + ( this.zuper ? ": " + this.zuper.toString() : "" )
-            + ( modifiers.length > 0 ? " " + modifiers.join(" ") : "" )
+	    + ( this.supers.length > 0 ? " : " + this.supers.join(" : ") : "" )
+            + ( modifiers.length  > 0 ? " "   + modifiers.join(" ") : "" )
 	    + ( this.value ? " = " + this.value : "" )
 	    + ( children.length > 0 ? 
 		" {" + "\n" + children.join( "\n") + "\n" + ident + "}" : ";" );
     },
+
     accept: function( visitor, data ) {
 	return visitor.visit(this, data);
     },
+
     childrenAccept: function( visitor, data ) {
 	this.children.each(function(child) { visitor.visit(child, data); } );
 	return data;
@@ -140,11 +159,11 @@ ADL.include = function( file ) {
     return new ADL.Parser().parse(request.transport.responseText).getChildren();
 }
 
-ADL.createConstruct = function(annotation, type, name, zuper, 
+ADL.createConstruct = function(annotation, type, name, supers, 
 		               modifiers, value, children) {
   var c = new ADL.Construct( type, name )  ;
   if( annotation ) { c.annotation = annotation; }
-  if( zuper ) { c.zuper = zuper; }
+  if( supers ) { c.supers = supers; }
   if( Object.isArray(modifiers) ) {
       modifiers.each(function(modifier) { 
 	  c.modifiers.set(modifier.key, modifier);
@@ -259,7 +278,7 @@ Statements: Statements Statement  [* %% = makeList( %1, %2 ); *]
 Statement: Construct
 	 | Directive;
 				
-Construct: Annotations Type Name Zuper Modifiers Value Children 
+Construct: Annotations Type Name Supers Modifiers Value Children 
     [* %% = ADL.createConstruct( %1, %2, %3, %4, %5, %6, %7 ); *];
 
 Directive: IncludeDirective String
@@ -272,8 +291,10 @@ Type: Identifier;
 
 Name: Identifier;
 
-Zuper: ':' Identifier Multiplicity [* %% = new ADL.Reference( %2, %3 ); *] 
-     |;
+Supers: Supers Super [* %% = makeList( %1, %2 ); *]
+      |;
+
+Super: ':' Identifier Multiplicity [* %% = new ADL.Reference( %2, %3 ); *];
 
 Multiplicity: '[' Integer ']'         [* %% = new ADL.Multiplicity( %2 );  *]
        | '[' Integer '..' Integer ']' [* %% = new ADL.Multiplicity( %2, %4 ); *]

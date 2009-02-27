@@ -1,12 +1,15 @@
 PROTOTYPE-DIST=prototype-1.6.0.3.js
 PROTOTYPE-URL=http://www.prototypejs.org/assets/2008/9/29/${PROTOTYPE-DIST}
 
+ENVJS-DIST=lib/env-js/dist/env.rhino.js
+ENVJS-URL=git://github.com/thatcher/env-js.git
+
 APP=ADL
 SRCS=src/js/${APP}.par
 LIBS=lib/${PROTOTYPE-DIST}
 VERSION=$(shell git describe --tags | cut -d'-' -f1,2)
 
-TARGETS=build/${APP}.standalone.min.js build/${APP}.shared.min.js
+TARGETS=build/${APP}.standalone.min.js build/${APP}.shared.min.js build/${APP}.cli.js
 
 GIT-FETCH=git clone -q
 FETCH=wget -q
@@ -17,6 +20,7 @@ RHINO-JAR=lib/rhino1_7R1/js.jar
 RHINO=java -jar ${RHINO-JAR}
 JSEXEC=${RHINO} -w -debug
 COMPRESS=java -jar ${COMPRESS-JAR} --type js
+PATCH=patch -N -s
 
 RHINO-DIST=rhino1_7R1.zip
 RHINO-URL=ftp://ftp.mozilla.org/pub/mozilla.org/js/${RHINO-DIST}
@@ -75,6 +79,13 @@ lib/${PROTOTYPE-DIST}:
 	@mkdir -p lib
 	@(cd lib; ${FETCH} ${PROTOTYPE-URL})
 
+${ENVJS-DIST}:
+	@echo "*** importing $@"
+	@mkdir -p lib
+	@(cd lib; ${GIT-FETCH} ${ENVJS-URL})
+	@(cd lib/env-js; ant 2>&1 > /dev/null)
+	@(cd lib/env-js/dist; ${PATCH} < ../../../patches/env.js.diff)
+
 lib/jscc/jscc.js: lib/jscc
 lib/jscc/driver_web.js_: lib/jscc
 
@@ -102,6 +113,11 @@ build/${APP}.shared.js: ${SRCS} lib/jscc/jscc.js lib/jscc/driver_web.js_ ${RHINO
 	@mkdir -p build
 	@${JSEXEC} lib/jscc/jscc.js -o $@ -t lib/jscc/driver_web.js_ ${SRCS}
 
+build/${APP}.cli.js: ${SRCS} lib/jscc/jscc.js lib/jscc/driver_rhino.js_ ${RHINO-JAR}
+	@echo "*** generating ${APP} cli parser"
+	@mkdir -p build
+	@${JSEXEC} lib/jscc/jscc.js -o $@ -t lib/jscc/driver_rhino.js_ ${SRCS}
+
 publish: dist/${DIST} dist/${DIST-SRC}
 	@echo "*** publishing distributions to ${PUB}"
 	@scp dist/${DIST} dist/${DIST-SRC} ${PUB}
@@ -119,6 +135,10 @@ dist/${DIST-SRC}: ${DIST-SRCSRCS}
 	@mkdir -p dist/src/${APP}
 	@cp -r ${DIST-SRCSRCS} dist/src/${APP}
 	@(cd dist/src; ${ZIP} ../${DIST-SRC} ${APP})
+
+test: build ${ENVJS-DIST}
+	@echo "*** running tests"
+	@${JSEXEC} -f t/*.js
 
 clean:
 	@find . | grep "~$$" | xargs rm -f
