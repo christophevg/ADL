@@ -1,8 +1,10 @@
-ADL - Abstract Definition Language
+ADL - Abstract Domain Language
+http://thesoftwarefactory.be/wiki/ADL
 
 ---
 
-ADL is a generic language to describe hierarchical stuff, like software ;-)
+ADL is a generic language to mostly describe hierarchical stuff, like
+software ;-)
 
 ...
 
@@ -12,17 +14,31 @@ I'll add documentation and examples here also :-)
 
 In a nutshell:
 $ make
-*** fetching js/cc dist
-*** unpacking js/cc dist
-*** importing lib/jscc.js
-*** importing lib/driver_web.js_
-*** generating adl parser
-*** fetching prototype dist
-*** importing lib/prototype.js
+*** importing lib/jscc
+*** importing lib/rhino1_7R1/js.jar
+*** generating ADL parser
+*** importing lib/prototype-1.6.0.3.js
+*** building build/ADL.standalone.js
+*** importing lib/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar
+*** building build/ADL.standalone.min.js
+*** building build/ADL.shared.min.js
+*** generating ADL cli parser
 $ ls build
-adl.js
-ls src/js/
-adl.par		visitor.js
+ADL.cli.js            ADL.shared.min.js     ADL.standalone.min.js
+ADL.shared.js         ADL.standalone.js
+
+$ make test
+*** importing lib/env-js/dist/env.rhino.js
+*** running tests
+3 tests run.
+0 failed.
+
+$ make dist
+*** packaging ADL distribution
+*** packaging ADL src distribution
+$ ls dist
+ADL-0.0-3-src.zip     ADL-0.0-3.zip     js                src
+
 
 Visit examples/index.html with your browser to see things in action and
 while waiting for me to write decent documentation, study the code.

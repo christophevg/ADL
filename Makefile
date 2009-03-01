@@ -34,10 +34,10 @@ COMPRESS-JAR=lib/yuicompressor-${COMPRESSOR-VERSION}/build/yuicompressor-${COMPR
 COMPRESSOR-URL=http://www.julienlecomte.net/yuicompressor/${COMPRESSOR-DIST}
 
 DIST=${APP}-${VERSION}.zip
-DISTSRCS=${TARGETS} examples/*.html LICENSE README doc
+DISTSRCS=${TARGETS} examples/*.html LICENSE README doc/MyVisitor.js
 
 DIST-SRC=${APP}-${VERSION}-src.zip
-DIST-SRCSRCS=LICENSE README examples Makefile src doc
+DIST-SRCSRCS=LICENSE README examples Makefile src doc patches
 
 PUB=moonbase:~/dist/
 
@@ -124,7 +124,7 @@ publish: dist/${DIST} dist/${DIST-SRC}
 
 dist/${DIST}: ${DISTSRCS}
 	@echo "*** packaging ${APP} distribution"
-	@mkdir -p dist/js/${APP}/{examples,build}
+	@mkdir -p dist/js/${APP}/{examples,build,doc}
 	@for f in ${DISTSRCS}; do \
 	    cat $$f | sed -e 's/\.\.\/build/../' > dist/js/${APP}/$$f; done
 	@mv dist/js/${APP}/build/* dist/js/${APP}/; rm -rf dist/js/${APP}/build
