@@ -236,7 +236,7 @@ function makeList() {
 
 !	' |\t|\n|\r|\f|//[^\n]*\n|[^/]/\*[^\*]*\*(\*|[^\*/][^\*]*\*)*/'
 
-	'0|[1-9][0-9]*'			 Integer
+	'[\+\-]?(0|[1-9][0-9]*)'	 Integer
         [* %match = new ADL.Integer( %match ); *]
 	'"([^"])*"'			 String	
         [* %match = new ADL.String( %match.substr( 1, %match.length - 2 ) ); *]

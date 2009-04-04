@@ -25,5 +25,9 @@ tester.test( parseADL ).using( [
 	name     : "003",
 	data     : "TestConstruct",
 	expected : false
+    },{
+	name     : "004",
+	data     : "TestConstrcut myTest +x=10 +y=+11 +z=-12;",
+	expected : true
     }
 ] );
