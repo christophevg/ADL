@@ -22,6 +22,18 @@ if( typeof Class == "undefined" ) {
 // top-level ADL namespace
 var ADL = {};
 
+ADL.Boolean = Class.create( {
+    value : null,
+
+    initialize: function( value ) {
+	this.value = value == "true" ? true : false;
+    },
+
+    toString: function() {
+	return this.value ? "true" : "false";
+    }
+});
+
 ADL.Integer = Class.create( {
     value : null,
 
@@ -236,6 +248,8 @@ function makeList() {
 
 !	' |\t|\n|\r|\f|//[^\n]*\n|[^/]/\*[^\*]*\*(\*|[^\*/][^\*]*\*)*/'
 
+	'true|false'			 Boolean
+        [* %match = new ADL.Boolean( %match ); *]
 	'[\+\-]?(0|[1-9][0-9]*)'	 Integer
         [* %match = new ADL.Integer( %match ); *]
 	'"([^"])*"'			 String	
@@ -309,7 +323,7 @@ Modifier: '+' Identifier              [* %% = new ADL.Modifier( %2 );     *]
 Value: ':=' Constant [* %% = %2 *] 
      |;
 
-Constant: String | Integer;
+Constant: String | Integer | Boolean;
 
 Children: '{' Statements '}' [* %% = %2;   *]
         | ';'                [* %% = null; *];
