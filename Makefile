@@ -112,11 +112,13 @@ build/${APP}.shared.js: ${SRCS} lib/jscc/jscc.js lib/jscc/driver_web.js_ ${RHINO
 	@echo "*** generating ${APP} parser"
 	@mkdir -p build
 	@${JSEXEC} lib/jscc/jscc.js -o $@ -t lib/jscc/driver_web.js_ ${SRCS}
+	@echo "\nADL.version = \"${VERSION}\";\n" >> $@;
 
 build/${APP}.cli.js: ${SRCS} lib/jscc/jscc.js lib/jscc/driver_rhino.js_ ${RHINO-JAR}
 	@echo "*** generating ${APP} cli parser"
 	@mkdir -p build
 	@${JSEXEC} lib/jscc/jscc.js -o $@ -t lib/jscc/driver_rhino.js_ ${SRCS}
+	@echo "\nADL.version = \"${VERSION}\";\n" >> $@;
 
 publish: dist/${DIST} dist/${DIST-SRC}
 	@echo "*** publishing distributions to ${PUB}"
