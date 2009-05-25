@@ -46,7 +46,7 @@ var testing = Class.create( {
 	this.start();
 	set.each(function(test) {
 	    this.nextTest();
-	    var outcome = this.testFunction( test.data );
+	    var outcome = this.testFunction( test.data, test.result );
 	    outcome.result == test.expected ? 
 		this.success(test.name) : this.fail(test.name, outcome.info);
 	}.bind(this) );

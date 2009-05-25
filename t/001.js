@@ -1,15 +1,16 @@
 load( "t/testing.js" );
 load( "build/ADL.cli.js" );
 
-function parseADL(src) {
-    var result = "";
+function parseADL(src, result) {
+    var retval = "";
     try {
-	result = new ADL.Parser().parse(src).getRoot().children.toString();
+	retval = new ADL.Parser().parse(src).getRoot().children.toString();
     } catch(e) {
-	result = "Expected : '" + src + "', but got : '" + result + "'\n" +
+	result = "Expected : '" + src + "', but got : '" + retval + "'\n" +
 	    "The error was: " + e.toString();
     }
-    return { result: src == result, info: result };
+    return { result: ( result ? retval == result : retval == src ),
+	     info: result };
 }
 
 tester.test( parseADL ).using( [ 
@@ -32,6 +33,21 @@ tester.test( parseADL ).using( [
     },{
 	name     : "005",
 	data     : "TestConstruct myTest +bool=true +bool2=false;",
+	expected : true
+    },{
+	name     : "006",
+	data     : "+prefixModifier TestConstruct myTest;",
+	result   : "TestConstruct myTest +prefixModifier;",
+	expected : true
+    },{
+	name     : "007",
+	data     : "+prefixModifier +prefixModifier2=\"test\" TestConstruct myTest;",
+	result   : "TestConstruct myTest +prefixModifier +prefixModifier2=\"test\";",
+	expected : true
+    },{
+	name     : "008",
+	data     : "+prefixModifier TestConstruct myTest +suffixModifier=\"test\";",
+	result   : "TestConstruct myTest +prefixModifier +suffixModifier=\"test\";",
 	expected : true
     }
 ] );
