@@ -22,10 +22,10 @@ if( typeof Class == "undefined" ) {
 // top-level ADL namespace
 var ADL = {};
 
-ADL.Boolean = Class.create( {
+ADL.Boolean = Class.extend( {
     value : null,
 
-    initialize: function( value ) {
+    init: function( value ) {
 	this.value = value == "true" ? true : false;
     },
 
@@ -34,10 +34,10 @@ ADL.Boolean = Class.create( {
     }
 });
 
-ADL.Integer = Class.create( {
+ADL.Integer = Class.extend( {
     value : null,
 
-    initialize: function( value ) {
+    init: function( value ) {
 	this.value = value;
     },
 
@@ -46,10 +46,10 @@ ADL.Integer = Class.create( {
     }
 });
 
-ADL.String = Class.create( {
+ADL.String = Class.extend( {
     value : null,
 
-    initialize: function( value ) {
+    init: function( value ) {
 	this.value = value;
     },
 
@@ -58,10 +58,10 @@ ADL.String = Class.create( {
     }
 });
 
-ADL.Annotation = Class.create( {
+ADL.Annotation = Class.extend( {
     data : null,
 
-    initialize: function( data ) {
+    init: function( data ) {
 	this.data = data;
     },
 
@@ -70,11 +70,11 @@ ADL.Annotation = Class.create( {
     }
 });
 
-ADL.Multiplicity = Class.create( {
+ADL.Multiplicity = Class.extend( {
     low : null,
     high : null,
 
-    initialize: function( low, high ) {
+    init: function( low, high ) {
 	this.low = low;
 	this.high = high;
     },
@@ -84,11 +84,11 @@ ADL.Multiplicity = Class.create( {
     }
 });
 
-ADL.Reference = Class.create( {
+ADL.Reference = Class.extend( {
     constructName : null,
     multiplicity : null,
 
-    initialize: function( constructName, multiplicity ) {
+    init: function( constructName, multiplicity ) {
 	this.constructName = constructName;
 	this.multiplicity = multiplicity;
     },
@@ -99,11 +99,11 @@ ADL.Reference = Class.create( {
     }
 });
 
-ADL.Modifier = Class.create( {
+ADL.Modifier = Class.extend( {
     key : null,
     value : null,
 
-    initialize: function( key, value ) {
+    init: function( key, value ) {
 	this.key = key;
 	this.value = value;
     },
@@ -114,18 +114,12 @@ ADL.Modifier = Class.create( {
     }
 });
 
-ADL.Construct = Class.create( {
-    annotation: null,
-    type      : null,
-    name      : null,
-    supers    : null,
-    value     : null,
-    modifiers : new Hash(),
-    children  : new Array(),
-
-    initialize: function( type, name ) {
+ADL.Construct = Class.extend( {
+    init: function( type, name ) {
+        this.annotation = null;
 	this.type = type;
 	this.name = name;
+	this.value = null;
 	this.supers    = new Array();
 	this.modifiers = new Hash();
 	this.children  = new Array();
@@ -135,12 +129,12 @@ ADL.Construct = Class.create( {
       ident = ident || "";
 
       var modifiers = new Array();
-      this.modifiers.each(function(pair) { 
-	  modifiers.push( pair.value.toString() ); 
+      this.modifiers.iterate(function(key, value) { 
+	  modifiers.push( value.toString() ); 
       });
 
       var children = new Array();
-      this.children.each( function(item) { 
+      this.children.iterate( function(item) { 
 	  children.push( item.toString("  " + ident) ); 
       });
 	
@@ -160,7 +154,7 @@ ADL.Construct = Class.create( {
     },
 
     childrenAccept: function( visitor, data ) {
-	this.children.each(function(child) { visitor.visit(child, data); } );
+	this.children.iterate(function(child) { visitor.visit(child, data); } );
 	return data;
     }
 } );
@@ -177,7 +171,7 @@ ADL.createConstruct = function(annotation, type, name, supers,
   if( annotation ) { c.annotation = annotation; }
   if( supers ) { c.supers = supers; }
   if( Object.isArray(modifiers) ) {
-      modifiers.each(function(modifier) { 
+      modifiers.iterate(function(modifier) { 
 	  c.modifiers.set(modifier.key, modifier);
       } );
   }   
@@ -188,9 +182,9 @@ ADL.createConstruct = function(annotation, type, name, supers,
   return c; 
 }
 
-ADL.AST = Class.create( {
+ADL.AST = Class.extend( {
     root : ADL.createConstruct( "", "root", "" ),
-    initialize: function(top) {
+    init: function(top) {
 	this.root.children = top;
     },
     getRoot: function() {
@@ -203,7 +197,7 @@ ADL.AST = Class.create( {
 
 ADL.ast = null;
 
-ADL.Parser = Class.create( {
+ADL.Parser = Class.extend( {
   parse: function( src ) {
       var error_cnt = 0;
       var error_off = new Array();

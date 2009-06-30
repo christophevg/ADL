@@ -1,8 +1,13 @@
 load( "lib/env-js/dist/env.rhino.js");
-load( "lib/prototype-1.6.0.3.js" );
 
-var testing = Class.create( {
-    initialize : function() {
+if( typeof console === "undefined" ) {
+    var console = { log: function() { } };
+}
+
+load( "lib/ProtoJS/build/ProtoJS.js");
+
+var testing = Class.extend( {
+    init : function() {
 	this.start();
     },
     
@@ -33,7 +38,7 @@ var testing = Class.create( {
 	this.failure++;
 	print( "FAIL: " + name );
 	var infoLines = info.split("\n");
-	infoLines.each( function(line) {
+	infoLines.iterate( function(line) {
 	    print( "      " + line );
 	} );
     },
@@ -44,12 +49,12 @@ var testing = Class.create( {
 	    return;
 	}
 	this.start();
-	set.each(function(test) {
+	set.iterate(function(test) {
 	    this.nextTest();
 	    var outcome = this.testFunction( test.data, test.result );
 	    outcome.result == test.expected ? 
 		this.success(test.name) : this.fail(test.name, outcome.info);
-	}.bind(this) );
+	}.scope(this) );
 	this.showResults();
     }
 } );

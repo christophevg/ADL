@@ -10,7 +10,7 @@ function parseADL(src, result) {
 	    "The error was: " + e.toString();
     }
     return { result: ( result ? retval == result : retval == src ),
-	     info: result };
+	     info: result || "" };
 }
 
 tester.test( parseADL ).using( [ 

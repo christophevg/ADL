@@ -1,17 +1,16 @@
-PROTOTYPE-DIST=prototype-1.6.0.3.js
-PROTOTYPE-URL=http://www.prototypejs.org/assets/2008/9/29/${PROTOTYPE-DIST}
-
 ENVJS-DIST=lib/env-js/dist/env.rhino.js
 ENVJS-URL=git://github.com/thatcher/env-js.git
 
+PROTOJS-URL=../../ProtoJS
+
 APP=ADL
 SRCS=src/js/${APP}.par
-LIBS=lib/${PROTOTYPE-DIST}
+LIBS=lib/ProtoJS/build/ProtoJS.js
 VERSION=$(shell git describe --tags | cut -d'-' -f1,2)
 
 TARGETS=build/${APP}.standalone.min.js build/${APP}.shared.min.js build/${APP}.cli.js
 
-GIT-FETCH=git clone -q
+GIT-CLONE=git clone -q
 FETCH=wget -q
 ZIP=zip -qr
 UNZIP=unzip -q
@@ -74,15 +73,15 @@ ${COMPRESS-JAR}:
 	@(cd lib; ${FETCH} ${COMPRESSOR-URL}; ${UNZIP} ${COMPRESSOR-DIST})
 	@(cd lib/yuicompressor-${COMPRESSOR-VERSION}; ant > /dev/null)
 
-lib/${PROTOTYPE-DIST}:
+lib/ProtoJS/build/ProtoJS.js:
 	@echo "*** importing $@"
-	@mkdir -p lib
-	@(cd lib; ${FETCH} ${PROTOTYPE-URL})
+	@(cd lib; ${GIT-CLONE} ${PROTOJS-URL})
+	@(cd lib/ProtoJS; ${MAKE})
 
 ${ENVJS-DIST}:
 	@echo "*** importing $@"
 	@mkdir -p lib
-	@(cd lib; ${GIT-FETCH} ${ENVJS-URL})
+	@(cd lib; ${GIT-CLONE} ${ENVJS-URL})
 	@(cd lib/env-js; ant 2>&1 > /dev/null)
 	@(cd lib/env-js/dist; ${PATCH} < ../../../patches/env.js.diff)
 

@@ -1,13 +1,13 @@
 <html>
   <head>
-    <script src="../build/ADL.standalone.min.js"></script>
+    <script src="../build/ADL.standalone.js"></script>
     <script>
 
 function log(msg) {
     document.getElementById( "console" ).value += msg + "\n";
 }
 
-MyVisitor = Class.create( {
+MyVisitor = Class.extend( {
     visit: function( construct, data ) {
 	switch( construct.type ) {
 	case "MyConstructType":
