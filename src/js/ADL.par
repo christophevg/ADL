@@ -15,10 +15,6 @@
 	
 [*
 
-if( typeof Class == "undefined" ) {
-    alert( "ADL requires at least the Prototype Class support." );
-}
-
 // top-level ADL namespace
 var ADL = {};
 
