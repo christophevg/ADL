@@ -156,9 +156,8 @@ ADL.Construct = Class.extend( {
 } );
 
 ADL.include = function( file ) {
-    var request = new Ajax.Request(file.value + ".adl", 
-		     { method: "get", asynchronous: false });    
-    return new ADL.Parser().parse(request.transport.responseText).getChildren();
+    var adl = new ProtoJS.Ajax().fetch( file.value + ".adl" );
+    return new ADL.Parser().parse(adl).getChildren();
 }
 
 ADL.createConstruct = function(annotation, type, name, supers, 
