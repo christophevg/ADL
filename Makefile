@@ -1,7 +1,7 @@
 ENVJS-DIST=lib/env-js/dist/env.rhino.js
 ENVJS-URL=git://github.com/thatcher/env-js.git
 
-PROTOJS-URL=../../ProtoJS
+PROTOJS-URL=http://git.thesoftwarefactory.be/pub/ProtoJS.git
 
 APP=ADL
 SRCS=src/js/${APP}.par
