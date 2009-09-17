@@ -49,5 +49,38 @@ tester.test( parseADL ).using( [
 	data     : "+prefixModifier TestConstruct myTest +suffixModifier=\"test\";",
 	result   : "TestConstruct myTest +prefixModifier +suffixModifier=\"test\";",
 	expected : true
+    },{
+	name     : "009",
+	data     : "TestConstruct<T> myTest;",
+	result   : "TestConstruct<T> myTest;",
+	expected : true
+    },{
+	name     : "010",
+	data     : "TestConstruct<T> myTest : SuperConstruct;",
+	result   : "TestConstruct<T> myTest : SuperConstruct;",
+	expected : true
+    },{
+	name     : "011",
+	data     : "TestConstruct<T> myTest : SuperConstruct<T>;",
+	result   : "TestConstruct<T> myTest : SuperConstruct<T>;",
+	expected : true
+    },{
+	name     : "012",
+	data     : "TestConstruct myTest : SuperConstruct<T>;",
+	result   : "TestConstruct myTest : SuperConstruct<T>;",
+	expected : true
+    },{
+	name     : "013",
+	data     : "TestConstruct<X, Y> myTest : SuperConstruct<X>;",
+	result   : "TestConstruct<X,Y> myTest : SuperConstruct<X>;",
+	expected : true
+    },{
+	name     : "014",
+	data     : "TestConstruct myTest<X> : SuperConstruct;",
+	expected : false
+    },{
+	name     : "015",
+	data     : "TestConstruct<> myTest : SuperConstruct;",
+	expected : false
     }
 ] );
