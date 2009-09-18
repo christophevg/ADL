@@ -1,16 +1,28 @@
 load( "t/testing.js" );
 load( "build/ADL.cli.js" );
 
-function parseADL(src, result) {
-    var retval = "";
+function parseADL(input, msg, expected ) {
+    var output = "";
+    var error  = null;
+    msg        = msg || "";
+    expected   = expected || input;
+
     try {
-	retval = new ADL.Parser().parse(src).getRoot().children.toString();
+	output = new ADL.Parser().parse(input).getRoot().children.toString();
     } catch(e) {
-	result = "Expected : '" + src + "', but got : '" + retval + "'\n" +
-	    "The error was: " + e.toString();
+	error = e;
     }
-    return { result: ( result ? retval == result : retval == src ),
-	     info: result || "" };
+
+    if( error ) {
+	error = error.toString();
+    }
+    if( error || output != expected ) {
+	msg = "Expected :\n" + expected + "\nbut got :\n" + output + "\n" +
+	    ( error ? "Parsing error was: " + error + "\n" : "" ) + msg;
+	return { result: false, info: msg };
+    }
+    
+    return { result: true, info: "" };
 }
 
 tester.test( parseADL ).using( [ 
@@ -38,6 +50,7 @@ tester.test( parseADL ).using( [
 	name     : "006",
 	data     : "+prefixModifier TestConstruct myTest;",
 	result   : "TestConstruct myTest +prefixModifier;",
+	msg      : "prefix modifiers will be turned into postfix modifiers.",
 	expected : true
     },{
 	name     : "007",

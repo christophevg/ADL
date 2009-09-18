@@ -36,11 +36,7 @@ var testing = Class.extend( {
 
     fail : function( name, info ) {
 	this.failure++;
-	print( "FAIL: " + name );
-	var infoLines = info.split("\n");
-	infoLines.iterate( function(line) {
-	    print( "      " + line );
-	} );
+	print( "FAIL: " + name + "\n" + info );
     },
 
     using : function( set ) {
@@ -51,7 +47,7 @@ var testing = Class.extend( {
 	this.start();
 	set.iterate(function(test) {
 	    this.nextTest();
-	    var outcome = this.testFunction( test.data, test.result );
+	    var outcome = this.testFunction( test.data, test.msg, test.result );
 	    outcome.result == test.expected ? 
 		this.success(test.name) : this.fail(test.name, outcome.info);
 	}.scope(this) );
