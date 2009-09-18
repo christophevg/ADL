@@ -77,7 +77,7 @@ tester.test( parseADL ).using( [
     },{
 	name     : "014",
 	data     : "TestConstruct myTest<X> : SuperConstruct;",
-	expected : false
+	expected : true
     },{
 	name     : "015",
 	data     : "TestConstruct<> myTest : SuperConstruct;",

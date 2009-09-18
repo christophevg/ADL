@@ -284,7 +284,7 @@ Statement: Construct
 	 | Directive;
 				
 Construct: Annotations Modifiers Type Name Supers Modifiers Value Children
-	[* %% = ADL.createConstruct( %1, %3, %4, %5, makeList( %2, %6) , %7, %8 ); *];
+    [* %% = ADL.createConstruct( %1, %3, %4, %5, makeList( %2, %6) , %7, %8 ); *];
 
 Directive: IncludeDirective String
     [* %% = ADL.include( %2 ); *];
@@ -304,9 +304,9 @@ GenericArguments: GenericArguments ',' GenericArgument
                     [* %% = makeList( %1 ) *]
                 |; 
 
-Type: Identifier | Identifier Generic [* %% = %1+%2 *];
+Name: Identifier | Identifier Generic [* %% = %1+%2 *];
 
-Name: Identifier;
+Type: Identifier | Identifier Generic [* %% = %1+%2 *];
 
 Supers: Supers Super [* %% = makeList( %1, %2 ); *]
       |;
