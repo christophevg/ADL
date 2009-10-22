@@ -203,13 +203,15 @@ ADL.Parser = Class.extend( {
 
     if( ( error_cnt = __##PREFIX##parse( src, error_off, error_la ) ) > 0 ) {
       var i;
+      var errors = "";
       for( i = 0; i < error_cnt; i++ ) {
-        alert( "Parse error near >" 
-        + src.substr( error_off[i], 30 ) + 
-        "<, expecting \"" + error_la[i].join() + "\"" );
+        errors += "Parse error: " + src.substr( error_off[i], 30 ) + 
+        ". Expecting \"" + error_la[i].join() + "\n";
       }
+      this.errors = errors;
       return null;
     }
+    this.errors = "";
     return ADL.ast;
   }
 
