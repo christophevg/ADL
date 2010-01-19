@@ -91,7 +91,10 @@ namespace TSF.ADL {
       return deps;
     }
 
+    public virtual void prepare() {}
+
     public String ToString(String prefix) {
+      this.prepare();
       return this.getAnnotationsAsString(prefix) 
           + prefix + this.type + " " + this.name
           + this.getSuperAsString()
