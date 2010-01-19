@@ -30,7 +30,7 @@ namespace TSF.ADL {
       this.type = "Boolean";
     }
 
-    public String toString() {
+    public override String ToString() {
       String s = " +" + this.key;
       switch(this.type) {
         case "String":

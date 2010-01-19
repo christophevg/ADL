@@ -67,7 +67,7 @@ namespace TSF.ADL {
     public String getModifiersAsString() {
       String s = "";
       foreach( Modifier modifier in this.modifiers ) {
-        s += modifier.toString() + " ";
+        s += modifier.ToString() + " ";
       }
       return s;
     }
@@ -76,7 +76,7 @@ namespace TSF.ADL {
       if( this.children.Count < 1 ) { return ";"; }
       String s = " {\r\n";
       foreach( Construct child in this.children ) {
-        s += child.toString(prefix + "  ") + "\r\n";
+        s += child.ToString(prefix + "  ") + "\r\n";
       }
       s += prefix + "}";
       return s;
@@ -91,7 +91,7 @@ namespace TSF.ADL {
       return deps;
     }
 
-    public String toString(String prefix) {
+    public String ToString(String prefix) {
       return this.getAnnotationsAsString(prefix) 
           + prefix + this.type + " " + this.name
           + this.getSuperAsString()
@@ -99,8 +99,8 @@ namespace TSF.ADL {
           + this.getChildrenAsString(prefix);
     }
     
-    public String toString() {
-      return this.toString("");
+    public override String ToString() {
+      return this.ToString("");
     }
   }
 }

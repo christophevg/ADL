@@ -41,6 +41,6 @@ public class test {
     
     root.addChild(child);
     
-    Console.WriteLine( root.toString() );
+    Console.WriteLine( root );
   }
 }
