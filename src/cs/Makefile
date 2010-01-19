@@ -1,16 +1,13 @@
-all: Construct.dll
+all: ADLSharp.dll
 
 test: text.exe
 	mono test.exe
 
-text.exe: test.cs Construct.dll
-	gmcs -r:Construct.dll -r:Modifier.dll test.cs
+text.exe: test.cs ADLSharp.dll
+	gmcs -r:ADLSharp.dll test.cs
 
-Construct.dll: Construct.cs Modifier.dll
-	gmcs -target:library -out:$@ -r:Modifier.dll $<
+ADLSharp.dll: Construct.cs Modifier.cs
+	gmcs -target:library -out:$@ Modifier.cs Construct.cs
 
-Modifier.dll: Modifier.cs
-	gmcs -target:library -out:$@ $<
-	
 clean:
 	@rm -f *.dll *.exe
