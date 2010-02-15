@@ -7,7 +7,7 @@ namespace TSF.ADL {
 
     public String name { get; set; }
 
-    private List<String> _annotations;
+    private List<String> _annotations = new List<String>();
     public List<String> annotations {
       get { return this._annotations;  }
       set { this._annotations = value; }
