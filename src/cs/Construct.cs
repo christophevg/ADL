@@ -4,11 +4,32 @@ using System.Collections.Generic;
 namespace TSF.ADL {
   public class Construct {
     private String type;
-    private String name;
-    private List<String> annotations = new List<String>();
-    private List<String>      supers = new List<String>();
-    private List<Modifier> modifiers = new List<Modifier>();
-    private List<Construct> children = new List<Construct>();
+
+    public String name { get; set; }
+
+    private List<String> _annotations;
+    public List<String> annotations {
+      get { return this._annotations;  }
+      set { this._annotations = value; }
+    }
+
+    private List<String> _supers = new List<String>();
+    public List<String> supers {
+      get { return this._supers; }
+      set { this._supers = value; }
+    }
+
+    private List<Modifier> _modifiers = new List<Modifier>();
+    public List<Modifier> modifiers {
+      get { return this._modifiers;  }
+      set { this._modifiers = value; }
+    }
+
+    private List<Construct> _children = new List<Construct>();
+    public  List<Construct> children {
+      get { return this._children; }
+      set { this._children = value; }
+    }
 
     public Construct setType(String type) {
       this.type = type.ToLower();
@@ -91,7 +112,16 @@ namespace TSF.ADL {
       return deps;
     }
 
-    public virtual void prepare() {}
+    public virtual void prepare() {
+      // TODO: find a better way to handle the modifiers like abstract and 
+      //       static
+      // remove all modifiers except for the stereotypes
+      for( int i = this.modifiers.Count-1; i>=0; i-- ) {
+        if (this.modifiers[i].key != "stereotype") {
+          this.modifiers.RemoveAt(i);
+        }
+      }
+    }
 
     public String ToString(String prefix) {
       this.prepare();

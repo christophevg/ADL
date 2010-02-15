@@ -2,11 +2,22 @@ using System;
 
 namespace TSF.ADL {
   public class Modifier {
-    private String  key;
+    public String key { get; set; }
     private String  stringValue;
     private int     integerValue;
     private Boolean boolValue;
     private String  type;
+
+    public String value {
+      get {
+        switch( this.type ) {
+          case "String":  return this.stringValue;
+          case "Integer": return this.integerValue.ToString();
+          case "Boolean": return this.boolValue.ToString();
+          default:        return string.Empty;
+        }
+      }
+    }
 
     public Modifier(String key) {
       this.key = key;
