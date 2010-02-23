@@ -201,20 +201,24 @@ ADL.Parser = Class.extend( {
 
     ADL.ast = null;
 
-    if( ( error_cnt = __##PREFIX##parse( src, error_off, error_la ) ) > 0 ) {
-      var i;
-      var errors = "";
-      for( i = 0; i < error_cnt; i++ ) {
-        errors += "Parse error: " + src.substr( error_off[i], 30 ) + 
-        ". Expecting \"" + error_la[i].join() + "\n";
+    try {
+      if( ( error_cnt = __##PREFIX##parse( src, error_off, error_la ) ) > 0 ) {
+        var i;
+        var errors = "";
+        for( i = 0; i < error_cnt; i++ ) {
+          errors += "Parse error: " + src.substr( error_off[i], 30 ) + 
+          ". Expecting \"" + error_la[i].join() + "\n";
+        }
+        this.errors = errors;
+        return null;
       }
-      this.errors = errors;
+    } catch(e) {
+      this.errors = "Semantic error: " + e;
       return null;
     }
     this.errors = "";
     return ADL.ast;
   }
-
 });
 
 function makeList() {
@@ -274,7 +278,7 @@ function makeList() {
 
 	'#include'			     IncludeDirective
 
-    '[a-zA-Z_][a-zA-Z0-9_\.\-]*'         Identifier;
+  '[a-zA-Z_][a-zA-Z0-9_\.\-]*'         Identifier;
 
 ##
 
@@ -295,9 +299,13 @@ Directive: IncludeDirective String
 Annotations: Annotation
            |;
 
-Generics: Generics Generic [* %% = makeList( %1, %2 ); *];
-
-Generic: '<' GenericArguments '>' [* %% = %1 + %2.join(",") + %3 *];
+Generic: '<' GenericArguments '>' [*
+  if( %2 ) {
+    %% = %1 + %2.join(",") + %3 
+  } else {
+    throw( "Missing GenericArguments" );
+  }
+*];
 
 GenericArgument: Identifier;
 
