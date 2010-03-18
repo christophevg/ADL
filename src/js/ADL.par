@@ -1,6 +1,6 @@
 /~
 	ADL, Javascript implementation for the Abstract Definition Language
-	Copyright 2009 by Christophe VG & TheSoftwareFactory
+	Copyright 2009-2010 by Christophe VG & TheSoftwareFactory
 
 	see LICENSE file and http://thesoftwarefactory.be/wiki/ADL for
 	information how you can use ADL
@@ -242,7 +242,7 @@ function makeList() {
 
 *]
 
-!	' |\t|\n|\r|\f|//[^\n]*\n|[^/]/\*[^\*]*\*(\*|[^\*/][^\*]*\*)*/'
+!	' |\t|\n|\r|//[^\n]*\n|[^/]/\*[^\*]*\*(\*|[^\*/][^\*]*\*)*/'
 
 	'true|false'			 Boolean
         [* %match = new ADL.Boolean( %match ); *]

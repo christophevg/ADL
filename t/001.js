@@ -95,5 +95,10 @@ tester.test( parseADL ).using( [
 	name     : "015",
 	data     : "TestConstruct<> myTest : SuperConstruct;",
 	expected : false
+    },{
+	name     : "017",
+	data     : "Construct\n\t\rf;",
+	result   : "Construct f;",
+	expected : true
     }
 ] );
