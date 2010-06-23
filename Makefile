@@ -6,6 +6,7 @@ CLI_SRCS     = build/${APP}.cli.js
 
 LIBS         = lib/ProtoJS/build/ProtoJS.js
 
+JSEXEC       = ${RHINO} -w -debug
 JSCC-WEB     = ${JSEXEC} lib/jscc.js -t lib/driver_web.js_ -o
 JSCC-RHINO   = ${JSEXEC} lib/jscc.js -t lib/river_rhino.js_ -o
 
