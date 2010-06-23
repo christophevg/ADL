@@ -18,9 +18,13 @@
 // top-level ADL namespace
 var ADL = {};
 
-ADL.Boolean = Class.extend( {
-  value : null,
+ADL.base = Class.extend( {
+	getValue: function getValue() {
+		return this.value;
+	}
+} );
 
+ADL.Boolean = ADL.base.extend( {
   init: function( value ) {
     this.value = value == "true" ? true : false;
   },
@@ -30,9 +34,7 @@ ADL.Boolean = Class.extend( {
   }
 });
 
-ADL.Integer = Class.extend( {
-  value : null,
-
+ADL.Integer = ADL.base.extend( {
   init: function( value ) {
     this.value = value;
   },
@@ -42,9 +44,7 @@ ADL.Integer = Class.extend( {
   }
 });
 
-ADL.String = Class.extend( {
-  value : null,
-
+ADL.String = ADL.base.extend( {
   init: function( value ) {
     this.value = value;
   },
@@ -54,26 +54,43 @@ ADL.String = Class.extend( {
   }
 });
 
-ADL.Annotation = Class.extend( {
-  data : null,
+ADL.Value = Class.extend( {
+	init: function( value ) {
+		this.value = value;
+	},
+	
+	getValue: function getValue() {
+		return this.value.getValue();
+	},
+	
+	toString: function() {
+		return " := " + this.value.toString();
+	}
+} );
 
-  init: function( data ) {
-    this.data = data;
+ADL.Annotation = ADL.base.extend( {
+  init: function( value ) {
+    this.value = value;
   },
 
   toString: function() {
-    return "[@" + this.data + "]";
+    return "[@" + this.value + "]";
   }
 });
 
 ADL.Multiplicity = Class.extend( {
-  low : null,
-  high : null,
-
   init: function( low, high ) {
     this.low = low;
     this.high = high;
   },
+
+	getLow: function getLow() {
+		return this.low;
+	},
+	
+	getHigh: function getHigh() {
+		return this.high;
+	},
 
   toString: function() {
     return "[" + this.low + ( this.high ? ".." + this.high : "" ) + "]";
@@ -81,13 +98,18 @@ ADL.Multiplicity = Class.extend( {
 });
 
 ADL.Reference = Class.extend( {
-  constructName : null,
-  multiplicity : null,
-
   init: function( constructName, multiplicity ) {
     this.constructName = constructName;
     this.multiplicity = multiplicity;
   },
+
+	getConstructName: function getConstructName() {
+		return this.constructName;
+	},
+	
+	getMultiplicity: function getMultiplicity() {
+		return this.multiplicity;
+	},
 
   toString: function() {
     return this.constructName + 
@@ -95,34 +117,96 @@ ADL.Reference = Class.extend( {
   }
 });
 
-ADL.Modifier = Class.extend( {
-  key : null,
-  value : null,
-
-  init: function( key, value ) {
-    this.key = key;
+ADL.Modifier = ADL.base.extend( {
+  init: function( name, value ) {
+    this.name = name;
     this.value = value;
   },
 
+	getName: function getName() {
+		return this.name;
+	},
+
   toString: function() {
-    return "+" + this.key + 
+    return "+" + this.name + 
     ( this.value ? "=" + this.value.toString() : "" );
   }
 });
 
 ADL.Construct = Class.extend( {
-  init: function( type, name ) {
-    this.annotation = null;
-    this.type = type;
-    this.name = name;
-    this.value = null;
-    this.supers    = new Array();
-    this.modifiers = new Hash();
-    this.children  = new Array();
+  init: function(type, name, value, annotations, supers, modifiers, children){
+    this.type        = type;
+    this.name        = name;
+    this.value       = value       || null;
+    this.annotations = annotations || new Array();
+    this.supers      = supers      || new Array();
+    this.children    = children    || new Array();
+    this.modifiers   = new Hash();
+		if( modifiers ) {
+			modifiers.iterate( function(modifier) {
+				this.addModifier(modifier);
+			}.scope(this) );
+		}
   },
+
+	getType: function getType() {
+		return this.type;
+	},
+	
+	getName: function getName() {
+		return this.name;
+	},
+	
+	getValue: function getValue() {
+		return this.value;
+	},
+	
+	getAnnotations: function getAnnotations() {
+		return this.annotations;
+	},
+	
+	addAnnotation: function addAnnotation(annotation) {
+		this.annotation.push(annotation);
+		return this;
+	},
+	
+	getSupers: function getSupers() {
+		return this.supers;
+	},
+	
+	addSuper: function addSuper(zuper) {
+		this.supers.push(zuper);
+		return this;
+	},
+	
+	getModifiers: function getModifiers() {
+		return this.modifiers.values();
+	},
+	
+	getModifier: function getModifier(name) {
+		return this.modifiers.get(name);
+	},
+	
+	addModifier: function addModifier(modifier) {
+		this.modifiers.set(modifier.getName(), modifier);
+	},
+
+	getChildren: function getChildren() {
+		return this.children;
+	},
+	
+	addChild: function addChild(child) {
+		this.children.push(child);
+		return this;
+	},
 
   toString: function(ident) {
     ident = ident || "";
+
+    var annotations = new Array();
+    this.annotations.iterate(function(value) { 
+      annotations.push( value.toString() ); 
+    });
 
     var modifiers = new Array();
     this.modifiers.iterate(function(key, value) { 
@@ -134,15 +218,15 @@ ADL.Construct = Class.extend( {
       children.push( item.toString("  " + ident) ); 
     });
 
-    return ( this.annotation ? 
-      ident + this.annotation.toString() + "\n" : "" ) 
-      + ident + this.type 
-      + " " + this.name
-      + ( this.supers.length > 0 ? " : " + this.supers.join(" : ") : "" )
-      + ( modifiers.length  > 0 ? " "   + modifiers.join(" ") : "" )
-      + ( this.value ? " = " + this.value : "" )
-      + ( children.length > 0 ? 
-        " {" + "\n" + children.join( "\n") + "\n" + ident + "}" : ";" );
+		return ( annotations.length > 0 ? 
+			ident + annotations.join("\n" + ident) + "\n" : "" ) 
+			+ ident + this.type 
+			+ " " + this.name
+			+ ( this.supers.length > 0 ? " : " + this.supers.join(" : ") : "" )
+			+ ( modifiers.length  > 0 ? " "   + modifiers.join(" ") : "" )
+			+ ( this.value ? this.value.toString() : "" )
+			+ ( children.length > 0 ? 
+				" {" + "\n" + children.join( "\n") + "\n" + ident + "}" : ";" );
   },
 
   accept: function( visitor, data ) {
@@ -157,37 +241,17 @@ ADL.Construct = Class.extend( {
 
 ADL.include = function( file ) {
   var adl = new ProtoJS.Ajax().fetch( file.value + ".adl" );
-  return new ADL.Parser().parse(adl).getChildren();
-}
-
-ADL.createConstruct = function( annotation, type, name, supers, 
-                                modifiers, value, children )
-{
-  var c = new ADL.Construct( type, name )  ;
-  if( annotation ) { c.annotation = annotation; }
-  if( supers ) { c.supers = supers; }
-  if( Object.isArray(modifiers) ) {
-    modifiers.iterate(function(modifier) { 
-      c.modifiers.set(modifier.key, modifier);
-    } );
-  }   
-  if( value ) { c.value = value; }
-  if( Object.isArray(children) ) { 
-    c.children = children;
-  }  
-  return c; 
+  return new ADL.Parser().parse(adl).getRoot().getChildren();
 }
 
 ADL.AST = Class.extend( {
-  root : ADL.createConstruct( "", "root", "" ),
-  init: function(top) {
-    this.root.children = top;
+  init: function(children) {
+	  this.root = 
+			new ADL.Construct( "", "root", null, null, null, null, children );
   },
+
   getRoot: function() {
     return this.root;
-  },
-  getChildren: function() {
-    return this.root.children;
   }
 });
 
@@ -291,12 +355,12 @@ Statement: Construct
 	 | Directive;
 				
 Construct: Annotations Modifiers Type Name Supers Modifiers Value Children
-    [* %% = ADL.createConstruct( %1, %3, %4, %5, makeList( %2, %6) , %7, %8 ); *];
+    [* %% = new ADL.Construct( %3, %4, %7, %1, %5, makeList( %2, %6), %8 ); *];
 
 Directive: IncludeDirective String
     [* %% = ADL.include( %2 ); *];
 
-Annotations: Annotation
+Annotations: Annotations Annotation [* %% = makeList( %1, %2 ); *]
            |;
 
 Generic: '<' GenericArguments '>' [*
@@ -334,7 +398,7 @@ Modifiers: Modifiers Modifier [* %% = makeList( %1, %2 ); *]
 Modifier: '+' Identifier              [* %% = new ADL.Modifier( %2 );     *]
         | '+' Identifier '=' Constant [* %% = new ADL.Modifier( %2, %4 ); *];
 
-Value: ':=' Constant [* %% = %2 *] 
+Value: ':=' Constant [* %% = new ADL.Value( %2 ); *] 
      |;
 
 Constant: String | Integer | Boolean;
