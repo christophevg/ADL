@@ -175,6 +175,9 @@ ADL.Construct = Class.extend( {
 	},
 	
 	addAnnotation: function addAnnotation(annotation) {
+		if( ! annotation instanceof ADL.Annotation ) {
+			annotation = new ADL.Annotation(annotation);
+		}
 		this.annotations.push(annotation);
 		return this;
 	},
@@ -196,7 +199,10 @@ ADL.Construct = Class.extend( {
 		return this.modifiers.get(name);
 	},
 	
-	addModifier: function addModifier(modifier) {
+	addModifier: function addModifier(modifier, value) {
+		if( ! modifier instanceof ADL.Modifier ) {
+			modifier = new ADL.Modifier(modifier, value);
+		}
 		this.modifiers.set(modifier.getName(), modifier);
 	},
 
