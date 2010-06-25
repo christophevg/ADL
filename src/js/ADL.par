@@ -157,8 +157,17 @@ ADL.Construct = Class.extend( {
 		return this.name;
 	},
 	
+	setName: function setName(name) {
+		this.name = name
+	},
+	
 	getValue: function getValue() {
 		return this.value;
+	},
+	
+	setValue: function setValue(value) {
+		if( ! value instanceof ADL.Value ) { value = new ADL.Value(value); }
+		this.value = value;
 	},
 	
 	getAnnotations: function getAnnotations() {
@@ -166,7 +175,7 @@ ADL.Construct = Class.extend( {
 	},
 	
 	addAnnotation: function addAnnotation(annotation) {
-		this.annotation.push(annotation);
+		this.annotations.push(annotation);
 		return this;
 	},
 	
