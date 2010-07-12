@@ -2,11 +2,10 @@ APP          = ADL
 
 GRAMMAR      = src/js/${APP}.par
 SRCS         = build/${APP}.parser.js
-CLI_SRCS     = build/${APP}.cli.js
+CLI_SRCS     = ${SRCS}
 
 LIBS         = lib/ProtoJS/build/ProtoJS.js
 
-JSEXEC       = ${RHINO} -w -debug
 JSCC-WEB     = ${JSEXEC} lib/jscc.js -t lib/driver_web.js_ -o
 JSCC-RHINO   = ${JSEXEC} lib/jscc.js -t lib/river_rhino.js_ -o
 
@@ -32,13 +31,3 @@ ${SRCS}: ${GRAMMAR}
 	@echo "*** generating ${APP} parser"
 	@mkdir -p build
 	@${JSCC-WEB} $@ $<
-
-${CLI_SRCS}: ${GRAMMAR}
-	@echo "*** generating ${APP} cli parser"
-	@mkdir -p build
-	@${JSCC-WEB} $@ $<
-	@echo "\nADL.version = \"${VERSION}\";\n" >> $@;
-
-test: ${CLI_SRCS} ${ENVJS-DIST}
-	@echo "*** running tests"
-	@${JSEXEC} -f t/*.js

@@ -1,7 +1,3 @@
-load( "lib/common.make/env.rhino.js" );
-load( "lib/ProtoJS/build/ProtoJS.min.js" );
-load( "build/ADL.cli.js" );
-
 function parseADL(input, msg, expected ) {
   var output = "";
   var error  = null;
