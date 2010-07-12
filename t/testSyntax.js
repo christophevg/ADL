@@ -1,4 +1,5 @@
-load( "t/testing.js" );
+load( "lib/common.make/env.rhino.js" );
+load( "lib/ProtoJS/build/ProtoJS.min.js" );
 load( "build/ADL.cli.js" );
 
 function parseADL(input, msg, expected ) {
@@ -33,7 +34,7 @@ function parseADL(input, msg, expected ) {
   return { result: true, info: "" };
 }
 
-tester.test( parseADL ).using(
+ProtoJS.Test.Runner.test( parseADL ).using(
   [ 
   { 
     name     : "001",
