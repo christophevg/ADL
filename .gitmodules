@@ -1,6 +1,6 @@
 [submodule "lib/common.make"]
 	path = lib/common.make
-	url = http://git.thesoftwarefactory.be/pub/common.make.git
+	url = http://github.com/christophevg/common.make.git
 [submodule "lib/ProtoJS"]
 	path = lib/ProtoJS
-	url = http://git.thesoftwarefactory.be/pub/ProtoJS.git
+	url = http://github.com/christophevg/ProtoJS.git
