@@ -1,44 +1,59 @@
 ADL - Abstract Domain Language
-http://thesoftwarefactory.be/wiki/ADL
+by Christophe VG <contact@christophe.vg>
+Copyright 2009-2010, Christophe VG
 
 ---
 
 ADL is a generic language to mostly describe hierarchical stuff, like
 software ;-)
 
-...
-
-Note: I'm trying to get things as polished as possible, but my current
-focus is on a project that uses ADL. When that reaches a stable state,
-I'll add documentation and examples here also :-)
-
 In a nutshell:
 $ make
-*** importing lib/jscc
-*** importing lib/rhino1_7R1/js.jar
+*** updating submodules
+*** updating submodules
+*** building build/ProtoJS.cli.js
+*** building build/ProtoJS.cli.min.js
 *** generating ADL parser
-*** importing lib/prototype-1.6.0.3.js
-*** building build/ADL.standalone.js
-*** importing lib/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar
-*** building build/ADL.standalone.min.js
+*** building build/ADL.shared.js
 *** building build/ADL.shared.min.js
-*** generating ADL cli parser
+*** building build/ADL.standalone.js
+*** building build/ADL.standalone.min.js
+*** building build/ADL.cli.js
+*** building build/ADL.cli.min.js
+
 $ ls build
-ADL.cli.js            ADL.shared.min.js     ADL.standalone.min.js
-ADL.shared.js         ADL.standalone.js
+ADL.cli.js            ADL.parser.js         ADL.shared.min.js     
+ADL.standalone.min.js ADL.cli.min.js        ADL.shared.js         
+ADL.standalone.js
 
 $ make test
-*** importing lib/env-js/dist/env.rhino.js
+*** updating submodules
+*** updating submodules
+*** building build/ProtoJS.cli.js
+*** building build/ProtoJS.cli.min.js
+*** building build/ADL.cli.js
+*** building build/ADL.cli.min.js
 *** running tests
-3 tests run.
+-----------------------
+21 tests run.
 0 failed.
 
 $ make dist
+*** updating submodules
+*** updating submodules
+*** building build/ProtoJS.cli.js
+*** building build/ProtoJS.cli.min.js
+*** building build/ADL.shared.js
+*** building build/ADL.shared.min.js
+*** building build/ADL.standalone.js
+*** building build/ADL.standalone.min.js
+*** building build/ADL.cli.js
+*** building build/ADL.cli.min.js
 *** packaging ADL distribution
 *** packaging ADL src distribution
-$ ls dist
-ADL-0.0-3-src.zip     ADL-0.0-3.zip     js                src
 
+$ ls dist/
+ADL-0.4-10-src.zip ADL-0.4-10.zip     js                 src
 
 Visit examples/index.html with your browser to see things in action and
 while waiting for me to write decent documentation, study the code.
