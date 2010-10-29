@@ -35,69 +35,56 @@ ProtoJS.Test.Runner.test( parseADL ).using(
   [ 
   { 
     name     : "001",
-    data     : "TestConstruct myTest;",
-    expected : true 
+    data     : "TestConstruct myTest;"
   },{ 
     name     : "002",
-    data     : "TestConstruct myTest : MyTestParent1 : MyTestParent2;",
-    expected : true 
+    data     : "TestConstruct myTest : MyTestParent1 : MyTestParent2;"
   },{
     name     : "003",
     data     : "TestConstruct",
     expected : false
   },{
     name     : "004",
-    data     : "TestConstruct myTest +x=10 +y=+11 +z=-12;",
-    expected : true
+    data     : "TestConstruct myTest +x=10 +y=+11 +z=-12;"
   },{
     name     : "005",
-    data     : "TestConstruct myTest +bool=true +bool2=false;",
-    expected : true
+    data     : "TestConstruct myTest +bool=true +bool2=false;"
   },{
     name     : "006",
     data     : "+prefixModifier TestConstruct myTest;",
     result   : "TestConstruct myTest +prefixModifier;",
-    msg      : "prefix modifiers will be turned into postfix modifiers.",
-    expected : true
+    msg      : "prefix modifiers will be turned into postfix modifiers."
   },{
     name     : "007",
     data     : "+prefixModifier +prefixModifier2=\"test\" TestConstruct myTest;",
-    result   : "TestConstruct myTest +prefixModifier +prefixModifier2=\"test\";",
-    expected : true
+    result   : "TestConstruct myTest +prefixModifier +prefixModifier2=\"test\";"
   },{
     name     : "008",
     data     : "+prefixModifier TestConstruct myTest +suffixModifier=\"test\";",
-    result   : "TestConstruct myTest +prefixModifier +suffixModifier=\"test\";",
-    expected : true
+    result   : "TestConstruct myTest +prefixModifier +suffixModifier=\"test\";"
   },{
     name     : "009",
     data     : "TestConstruct<T> myTest;",
-    result   : "TestConstruct<T> myTest;",
-    expected : true
+    result   : "TestConstruct<T> myTest;"
   },{
     name     : "010",
     data     : "TestConstruct<T> myTest : SuperConstruct;",
-    result   : "TestConstruct<T> myTest : SuperConstruct;",
-    expected : true
+    result   : "TestConstruct<T> myTest : SuperConstruct;"
   },{
     name     : "011",
     data     : "TestConstruct<T> myTest : SuperConstruct<T>;",
-    result   : "TestConstruct<T> myTest : SuperConstruct<T>;",
-    expected : true
+    result   : "TestConstruct<T> myTest : SuperConstruct<T>;"
   },{
     name     : "012",
     data     : "TestConstruct myTest : SuperConstruct<T>;",
-    result   : "TestConstruct myTest : SuperConstruct<T>;",
-    expected : true
+    result   : "TestConstruct myTest : SuperConstruct<T>;"
   },{
     name     : "013",
     data     : "TestConstruct<X, Y> myTest : SuperConstruct<X>;",
-    result   : "TestConstruct<X,Y> myTest : SuperConstruct<X>;",
-    expected : true
+    result   : "TestConstruct<X,Y> myTest : SuperConstruct<X>;"
   },{
     name     : "014",
-    data     : "TestConstruct myTest<X> : SuperConstruct;",
-    expected : true
+    data     : "TestConstruct myTest<X> : SuperConstruct;"
   },{
     name     : "015",
     data     : "TestConstruct<> myTest : SuperConstruct;",
@@ -105,30 +92,24 @@ ProtoJS.Test.Runner.test( parseADL ).using(
   },{
     name     : "016",
     data     : "Construct\n\t\rf;",
-    result   : "Construct f;",
-    expected : true
+    result   : "Construct f;"
   },{
 		name     : "017",
 		data     : "Construct X { Construct Y; }",
-		result   : "Construct X {\n  Construct Y;\n}",
-		expected : true
+		result   : "Construct X {\n  Construct Y;\n}"
 	},{
 		name     : "018",
 		data     : "[@annotation1] [@annotation2] Construct X;",
-		result   : "[@annotation1]\n[@annotation2]\nConstruct X;",
-		expected : true
+		result   : "[@annotation1]\n[@annotation2]\nConstruct X;"
 	},{
 		name     : "019",
-		data     : "Construct X := \"some Value\";",
-		expected : true
+		data     : "Construct X := \"some Value\";"
 	},{
 		name     : "020",
-		data     : "Construct X := 123;",
-		expected : true
+		data     : "Construct X := 123;"
 	},{
 		name     : "021",
-		data     : "Construct X := true;",
-		expected : true
+		data     : "Construct X := true;"
 	}
   ] 
 );
