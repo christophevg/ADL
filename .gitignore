@@ -1,3 +1,8 @@
 .depcheck
 build
 dist
+AdlParser.py
+AdlLexer.py
+Adl.tokens
+*.pyc
+
