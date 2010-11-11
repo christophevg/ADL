@@ -1,10 +1,14 @@
+ANTLR=java -cp lib/antlr-3.1.jar org.antlr.Tool
+PARSEADL=python parse.py
+RM=rm -f
+
 all: AdlParser.py run
 
-AdlParser.py: Adl.g
-	java -cp lib/antlr-3.1.jar org.antlr.Tool $<
+AdlParser.py: adl.g
+	@${ANTLR} $<
 
-run:
-	python adl.py test.adl
+run: test.adl
+	@${PARSEADL} $<
 
 clean:
-	rm -f Adl.tokens AdlLexer.py AdlParser.py *.pyc
+	@${RM} Adl.tokens AdlLexer.py AdlParser.py *.pyc
