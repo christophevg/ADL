@@ -6,6 +6,8 @@ tests = json.loads( open( "testSyntax.json").read() )
 
 failed = 0
 
+print "Testing python Parser"
+
 for test in tests:
   result   = False
   output   = ""

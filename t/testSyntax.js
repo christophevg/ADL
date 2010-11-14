@@ -30,6 +30,6 @@ function parseADL(input, msg, expected ) {
   return { result: true, info: "" };
 }
 
-print( "Testing Parser" );
+print( "Testing JS Parser" );
 eval( "tests = " + readFile("t/testSyntax.json") );
 ProtoJS.Test.Runner.test( parseADL ).using( tests );

@@ -34,24 +34,26 @@ endif
 #############################################################################
 
 ${SRCS}: ${GRAMMAR}
-	@echo "*** generating ${APP} parser"
+	@echo "*** generating ${APP} JS parser"
 	@mkdir -p build
 	@${JSCC-WEB} $@ $<
 
 #############################################################################
 # additions for python lib
 
+ANTLR=java -cp ../../lib/antlr-3.1.jar org.antlr.Tool
 PY-DIST = py-adl-${VERSION}.zip
 
 all-python:
+	@echo "*** generating ADL python parser"
+	@(cd src/python; ${ANTLR} adl.g 2>/dev/null)
 	@echo "*** building ADL python module"
-	@(cd src/python; ${MAKE} -s)
-	@rm -rf build/adl
-	@mkdir -p build/adl
-	@cp src/python/adl.py       build/adl
-	@cp src/python/adlLexer.py  build/adl
-	@cp src/python/adlParser.py build/adl
-	@touch build/adl/__init__.py
+	@rm -rf ${BUILD_DIR}/adl
+	@mkdir -p ${BUILD_DIR}/adl
+	@cp src/python/adl.py       ${BUILD_DIR}/adl
+	@cp src/python/adlLexer.py  ${BUILD_DIR}/adl
+	@cp src/python/adlParser.py ${BUILD_DIR}/adl
+	@touch ${BUILD_DIR}/adl/__init__.py
 
 dist-python: all-python
 	@echo "*** packaging ADL python module"
@@ -60,11 +62,10 @@ dist-python: all-python
 test-python: all-python
 	@rm -rf t/adl
 	@cp -r build/adl t/
-	@( cd t; python testSyntax.py 2>/dev/null)
+	@(cd t; python testSyntax.py 2>/dev/null)
 	@rm -rf t/adl
 
 clean-python:
-	@(cd src/python; ${MAKE} -s clean)
+	@(cd src/python; rm -f Adl.tokens AdlLexer.py AdlParser.py *.pyc)
 
 mrproper-python:
-	@(cd src/python; ${MAKE} -s mrproper)
