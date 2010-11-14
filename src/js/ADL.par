@@ -1,12 +1,9 @@
 /~
 	ADL, Javascript implementation for the Abstract Definition Language
-	Copyright 2009-2010 by Christophe VG & TheSoftwareFactory
-
-	see LICENSE file and http://thesoftwarefactory.be/wiki/ADL for
-	information how you can use ADL
+	Copyright 2009-2010 by Christophe VG
 
 	ADL Format: everything is a construct:
-	type name : super +modifier := value {
+	type name : super +modifier <= value {
 	  <constructs>	    
 	}
 
@@ -36,7 +33,7 @@ ADL.Boolean = ADL.base.extend( {
 
 ADL.Integer = ADL.base.extend( {
   init: function( value ) {
-    this.value = value;
+    this.value = parseInt(value);
   },
 
   toString: function() {
@@ -64,7 +61,7 @@ ADL.Value = Class.extend( {
 	},
 	
 	toString: function() {
-		return " := " + this.value.toString();
+		return " <= " + this.value.toString();
 	}
 } );
 
@@ -347,7 +344,7 @@ function makeList() {
 	'\-'
 	'='
 	'!='
-	':='
+	'<='
         '\*'
         '/'
 	'\|'
@@ -413,7 +410,7 @@ Modifiers: Modifiers Modifier [* %% = makeList( %1, %2 ); *]
 Modifier: '+' Identifier              [* %% = new ADL.Modifier( %2 );     *]
         | '+' Identifier '=' Constant [* %% = new ADL.Modifier( %2, %4 ); *];
 
-Value: ':=' Constant [* %% = new ADL.Value( %2 ); *] 
+Value: '<=' Constant [* %% = new ADL.Value( %2 ); *] 
      |;
 
 Constant: String | Integer | Boolean;

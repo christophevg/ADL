@@ -1,8 +1,8 @@
 #include "somefile.adl"
 [@transient]
-+visibility="public" diagram myDiagram : superDiagram : superIdea +dynamic <= "test" {
++visibility="public" diagram myDiagram<S> : superDiagram<S,T> : superIdea +dynamic <= "test" {
   [@10,10] [@stateless]
-  rectangle myRect1 +width=50 +height=75 +lineColor="red"	<= "value" {
+  rectangle<T> myRect1 +width=50 +height=75 +lineColor="red"	<= "value" {
 		subrectangle mySubRect1 +dashed=true +lineWidth=5 +roundedCorners;
 		nameLess : someType +hello;
   }

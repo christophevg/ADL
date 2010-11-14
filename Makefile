@@ -11,6 +11,12 @@ JSCC-RHINO   = ${JSEXEC} lib/jscc.js -t lib/river_rhino.js_ -o
 
 UPDATE_LIBS  = lib/ProtoJS
 
+MORE_TARGETS      = all-python
+MORE_DIST_TARGETS = dist-python
+MORE_TEST_TARGETS = test-python
+MORE_CLEAN_TARGETS = clean-python
+MORE_MRPROPER	_TARGETS = mrproper-python
+
 #############################################################################
 # boilerplate to kickstart common.make
 
@@ -31,3 +37,34 @@ ${SRCS}: ${GRAMMAR}
 	@echo "*** generating ${APP} parser"
 	@mkdir -p build
 	@${JSCC-WEB} $@ $<
+
+#############################################################################
+# additions for python lib
+
+PY-DIST = py-adl-${VERSION}.zip
+
+all-python:
+	@echo "*** building ADL python module"
+	@(cd src/python; ${MAKE} -s)
+	@rm -rf build/adl
+	@mkdir -p build/adl
+	@cp src/python/adl.py       build/adl
+	@cp src/python/adlLexer.py  build/adl
+	@cp src/python/adlParser.py build/adl
+	@touch build/adl/__init__.py
+
+dist-python: all-python
+	@echo "*** packaging ADL python module"
+	@${ZIP} ${DIST_DIR}/${PY-DIST} ${BUILD_DIR}/adl
+
+test-python: all-python
+	@rm -rf t/adl
+	@cp -r build/adl t/
+	@( cd t; python testSyntax.py 2>/dev/null)
+	@rm -rf t/adl
+
+clean-python:
+	@(cd src/python; ${MAKE} -s clean)
+
+mrproper-python:
+	@(cd src/python; ${MAKE} -s mrproper)

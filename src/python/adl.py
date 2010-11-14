@@ -103,12 +103,10 @@ import antlr3
 from adlLexer  import adlLexer
 from adlParser import adlParser
 
-class FileParser:
-  @staticmethod
-  def parse(file):
-    cStream = antlr3.StringStream(open(file).read())
-    lexer   = adlLexer(cStream)
-    tStream = antlr3.CommonTokenStream(lexer)
-    parser  = adlParser(tStream)
+def parse(string):
+  cStream = antlr3.StringStream(string)
+  lexer   = adlLexer(cStream)
+  tStream = antlr3.CommonTokenStream(lexer)
+  parser  = adlParser(tStream)
 
-    return parser.compilationUnit()
+  return parser.compilationUnit()

@@ -1,5 +1,5 @@
 import sys
 
-from adl import FileParser
+import adl
 
-print "\n".join(["%s" % (s) for s in FileParser.parse(sys.argv[1])])
+print "\n".join(["%s" % (s) for s in adl.parse(open(sys.argv[1]).read())])

@@ -47,8 +47,30 @@ annotations returns [list] @init { list = [] }
               )+
 			      ;
 
-type returns [value] : IDENTIFIER {	$value = $IDENTIFIER.getText() };
-name returns [value] : IDENTIFIER { $value = $IDENTIFIER.getText() };
+type returns [value] 
+     : IDENTIFIER generic?
+{
+  $value = $IDENTIFIER.getText()
+  if $generic.value != None: $value += $generic.value
+}
+     ;
+
+generic returns [value]
+        : '<' identifiers '>' { $value = "<" + ",".join($identifiers.list) + ">" }
+        ;
+
+identifiers returns [list]
+            : first=IDENTIFIER { $list = [ first.getText() ] }
+              ( ',' more=IDENTIFIER )* { if more != None: $list.append( more.getText() ) }
+            ;
+
+name returns [value]
+     : IDENTIFIER generic? 
+{
+  $value = $IDENTIFIER.getText() 
+  if $generic.value != None: $value += $generic.value
+}
+     ;
 
 modifiers returns [list] @init { list = [] }
             : ( modifier { list.append($modifier.instance) } )+
@@ -67,7 +89,7 @@ supers returns [list] @init { list = [] }
        ;
 
 super returns [instance]
-      : ':' IDENTIFIER { instance = Reference($IDENTIFIER.getText()) }
+      : ':' type { instance = Reference($type.value) }
       ;
 
 value returns [instance] 
@@ -109,7 +131,7 @@ BOOLEAN : 'true'
 IDENTIFIER : ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
     	   ;
 
-INTEGER : ('0'..'9')+
+INTEGER : ('+'|'-')?('0'..'9')+
         ;
 
 STRING :  '"' ~('"')+ '"'
