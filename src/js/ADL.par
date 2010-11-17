@@ -301,7 +301,7 @@ function makeList() {
   var ar = new Array();
   if( arguments ) {
     for( var v=0; v<arguments.length; v++ ) {
-      if( Object.isArray(arguments[v]) ) {
+      if( !Object.isUndefined(arguments[v]) && arguments[v].isArray() ) {
         for( var vv=0; vv<arguments[v].length; vv++ ) {
           if( arguments[v][vv] ) { 
             ar.push(arguments[v][vv]); 
