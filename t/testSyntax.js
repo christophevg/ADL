@@ -12,7 +12,11 @@ function parseADL(input, msg, expected ) {
     } else {
     	var root       = ast.getRoot();
     	var constructs = root.getChildren();
-    	var output     = constructs.toString();
+    	var output     = [];
+    	constructs.iterate( function(construct) { 
+    	  output.push(construct.toString());
+    	} );
+    	output = output.join("\n");
 		}
   } catch(e) {
     error = e;

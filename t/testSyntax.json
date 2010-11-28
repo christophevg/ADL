@@ -77,5 +77,13 @@
 	},{
 		"name"     : "021",
 		"data"     : "Construct X <= true;"
+	},{
+		"name"     : "022",
+		"data"     : "Construct X; // singleline comment test\nConstruct Y;",
+		"result"   : "Construct X;\nConstruct Y;"
+	},{
+		"name"     : "023",
+		"data"     : "Construct X; /* multiline comment test */\nConstruct Y;",
+		"result"   : "Construct X;\nConstruct Y;"
 	}
 ] 

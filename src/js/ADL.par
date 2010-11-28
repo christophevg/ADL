@@ -318,7 +318,7 @@ function makeList() {
 
 *]
 
-!	' |\t|\n|\r|//[^\n]*\n|[^/]/\*[^\*]*\*(\*|[^\*/][^\*]*\*)*/'
+!	' |\t|\n|\r|//[^\n]*\n|/\*([^\*]|[\r\n]|(\*+([^\*/]|[\r\n])))*\*+/'
 
 	'true|false'			 Boolean
         [* %match = new ADL.Boolean( %match ); *]
