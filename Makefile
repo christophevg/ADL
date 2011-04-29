@@ -15,7 +15,9 @@ MORE_TARGETS      = all-python
 MORE_DIST_TARGETS = dist-python
 MORE_TEST_TARGETS = test-python
 MORE_CLEAN_TARGETS = clean-python
-MORE_MRPROPER	_TARGETS = mrproper-python
+MORE_MRPROPER_TARGETS = mrproper-python
+
+MORE_DIST-SRC_SRCS = include.js
 
 #############################################################################
 # boilerplate to kickstart common.make

@@ -1,11 +1,17 @@
 ADL - Abstract Domain Language
 by Christophe VG <contact@christophe.vg>
-Copyright 2009-2010, Christophe VG
+Copyright 2009-2011, Christophe VG
 
 ---
 
 ADL is a generic language to mostly describe hierarchical stuff, like
 software ;-)
+
+To experience ADL, point your browser to the examples directory and take a 
+look around.
+
+If you are running a system with `make` support you can build everything from
+scratch and run our automated test suite.
 
 In a nutshell:
 $ make
@@ -54,6 +60,3 @@ $ make dist
 
 $ ls dist/
 ADL-0.4-10-src.zip ADL-0.4-10.zip     js                 src
-
-Visit examples/index.html with your browser to see things in action and
-while waiting for me to write decent documentation, study the code.
